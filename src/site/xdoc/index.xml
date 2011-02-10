@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<properties>
+		<title>Solr server for Lutece</title>
+	</properties>
+	<body>
+		<section name="Solr server for Lutece">
+			<p>This plugin embeds solR server in Lutece portal. The goal is to expose solR read only for 
+			everyone and read/write for lutece portal administrators.</p>
+			<subsection name="Introduction">
+				<p>Solr will be accessible at http://lutece-portal-uri/solr/</p>
+				<p>Request solR on this URI http://lutece-portal-uri/solr/select/?q=id:*</p>
+				<p>
+				Post content in solR on this URI http://lutece-portal-uri/solr/update/... <br />
+				You need to be authentify as a Lutece admin to be able to access /solr/update
+				</p>
+			</subsection>
+			<subsection name="Index CSV files">
+				<p>One can index CSV files in solR embeded in Lutece portal</p>
+				<p>
+				The CSV file must be format like :
+				<div class="source">
+				<pre>
+				id,field1_t,field2_i,field3_t,...
+				dataset_1,toto,521,tutu,...
+				dataset_2,tata,521,titi,...
+				...
+				</pre>
+				</div>
+				The column names are important.<br />
+				You need to have a "id" column to identify a document in solR.<br />
+				Column suffix can be "_t" for text content and "_i" for integer content.
+				</p>
+				<p>
+				One can submit a CSV file using a form like (you will need to be a connected Lutece administrator to do that):
+				<div class="source">
+				<pre>
+&lt;form action="http://lutece-portal-uri/solr/update/csv" enctype="multipart/form-data" method="post"&gt;
+&lt;input name="datafile" type="file" /&gt;
+&lt;input name="commit" type="hidden" value="true" /&gt;
+&lt;input type="submit" /&gt;
+&lt;/form&gt;
+				</pre>
+				</div>
+				</p>
+			</subsection>
+			<subsection name="Links">
+				<p>Visit <a href="http://wiki.apache.org/solr/SolrQuerySyntax">SolrQuerySyntax</a> to learn how to request solR</p>
+				<p>Exemple 1 <a href="http://dev.lutece.paris.fr/incubator/solr/select/?q=arrondissement_i:2">Scools in district 2 in Paris</a> XML format</p>
+				<p>Exemple 2 <a href="http://dev.lutece.paris.fr/incubator/solr/select/?q=arrondissement_i:2&amp;wt=json&amp;indent=on">Scools in district 2 in Paris</a> JSON format</p>
+			</subsection>
+			<subsection name="slf4j">
+			It can be necessary to exclude slf4j so that it doesn't conflict with others libraries dependencies (ex hibernate).
+			<div class="source">
+			<pre>
+			&lt;dependency&gt;
+				&lt;groupId&gt;fr.paris.lutece.plugins&lt;/groupId&gt;
+				&lt;artifactId&gt;plugin-solrserver&lt;/artifactId&gt;
+				&lt;version&gt;[0.1,)&lt;/version&gt;
+				&lt;type&gt;lutece-plugin&lt;/type&gt;
+				&lt;exclusions&gt;
+					&lt;exclusion&gt;
+						&lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+						&lt;artifactId&gt;slf4j-api&lt;/artifactId&gt;
+					&lt;/exclusion&gt;
+				&lt;/exclusions&gt;
+			&lt;/dependency&gt;
+			</pre>
+			</div>
+			</subsection>
+		</section>
+	</body>
+</document>

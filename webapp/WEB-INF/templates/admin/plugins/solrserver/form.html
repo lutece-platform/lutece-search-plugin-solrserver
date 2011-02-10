@@ -1,0 +1,13 @@
+<div class="content-box">
+  <h2>#i18n{solrserver.form.title}</h2>
+  <div class="highlight-box">
+
+<form action="solr/update/csv" enctype="multipart/form-data" method="post">
+<input name="datafile" type="file" />
+<input name="commit" type="hidden" value="true" />
+<input type="submit" />
+</form>
+
+<a href="solr/select/?q=*:*&amp;wt=json&indent=on">View result</a>
+  </div>
+</div>
