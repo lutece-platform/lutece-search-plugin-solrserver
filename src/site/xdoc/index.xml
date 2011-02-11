@@ -46,8 +46,6 @@
 			</subsection>
 			<subsection name="Links">
 				<p>Visit <a href="http://wiki.apache.org/solr/SolrQuerySyntax">SolrQuerySyntax</a> to learn how to request solR</p>
-				<p>Exemple 1 <a href="http://dev.lutece.paris.fr/incubator/solr/select/?q=arrondissement_i:2">Scools in district 2 in Paris</a> XML format</p>
-				<p>Exemple 2 <a href="http://dev.lutece.paris.fr/incubator/solr/select/?q=arrondissement_i:2&amp;wt=json&amp;indent=on">Scools in district 2 in Paris</a> JSON format</p>
 			</subsection>
 			<subsection name="slf4j">
 			It can be necessary to exclude slf4j so that it doesn't conflict with others libraries dependencies (ex hibernate).
@@ -68,6 +66,23 @@
 			</pre>
 			</div>
 			</subsection>
+			<subsection name="Javascript">
+			It's possible to request solr throw javascript :
+			<pre>
+jQuery.ajax({
+	url: "http://w35-associations.apps.paris.fr/searchasso/solr/select?q=*:*&facet=true&facet.field=domaine&rows=0&wt=json&indent=on",
+	success: function(data){
+		$('&lt;div/&gt;').text(data.response.numFound).appendTo("#contenu");
+		$.each(data.facet_counts.facet_fields.domaine, function(i,domaine){
+			$('&lt;span/&gt;').text(domaine).appendTo("#contenu");
+		});
+	},
+	dataType: 'jsonp',
+	jsonp: 'json.wrf'
+});
+			</pre>
+			</subsection>
+
 		</section>
 	</body>
 </document>
