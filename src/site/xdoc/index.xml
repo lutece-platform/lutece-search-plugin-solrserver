@@ -17,7 +17,7 @@
 				</p>
 			</subsection>
 			<subsection name="Index CSV files">
-				<p>One can index CSV files in solR embeded in Lutece portal</p>
+				<p>One can index CSV files in solR embeded in Lutece portal from the backoffice</p>
 				<p>
 				The CSV file must be format like :
 				<div class="source">
@@ -31,18 +31,6 @@
 				The column names are important.<br />
 				You need to have a "id" column to identify a document in solR.<br />
 				Column suffix can be "_t" for text content and "_i" for integer content.
-				</p>
-				<p>
-				One can submit a CSV file using a form like (you will need to be a connected Lutece administrator to do that):
-				<div class="source">
-				<pre>
-&lt;form action="http://lutece-portal-uri/solr/update/csv" enctype="multipart/form-data" method="post"&gt;
-&lt;input name="datafile" type="file" /&gt;
-&lt;input name="commit" type="hidden" value="true" /&gt;
-&lt;input type="submit" /&gt;
-&lt;/form&gt;
-				</pre>
-				</div>
 				</p>
 			</subsection>
 			<subsection name="Links">
