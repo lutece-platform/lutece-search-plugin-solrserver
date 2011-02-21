@@ -59,7 +59,7 @@
 			It's possible to request solr throw javascript :
 			<pre>
 jQuery.ajax({
-	url: "http://w35-associations.apps.paris.fr/searchasso/solr/select?q=*:*&facet=true&facet.field=domaine&rows=0&wt=json&indent=on",
+	url: "http://w35-associations.apps.paris.fr/searchasso/solr/select?q=*:*&amp;facet=true&amp;facet.field=domaine&amp;rows=0&amp;wt=json&amp;indent=on",
 	success: function(data){
 		$('&lt;div/&gt;').text(data.response.numFound).appendTo("#contenu");
 		$.each(data.facet_counts.facet_fields.domaine, function(i,domaine){
