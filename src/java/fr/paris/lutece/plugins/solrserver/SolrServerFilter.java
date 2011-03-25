@@ -62,7 +62,7 @@ public class SolrServerFilter implements Filter
     public static final String SOLR_RELATIVE_DATA = AppPropertiesService.getProperty( "solrserver.solr.relative.data" );
     private SolrDispatchFilter _solrDispatchFilter = new SolrDispatchFilter(  );
 
-    public void init( FilterConfig filterConfig ) throws ServletException
+    public final void init( FilterConfig filterConfig ) throws ServletException
     {
         String realPath = filterConfig.getServletContext(  ).getRealPath( "/" );
 
@@ -81,7 +81,7 @@ public class SolrServerFilter implements Filter
         _solrDispatchFilter.setPathPrefix( SOLR_URI );
     }
 
-    public void doFilter( ServletRequest request, ServletResponse response, FilterChain chain )
+    public final void doFilter( ServletRequest request, ServletResponse response, FilterChain chain )
         throws IOException, ServletException
     {
         String strURI = ( (HttpServletRequest) request ).getRequestURI(  );
@@ -102,7 +102,7 @@ public class SolrServerFilter implements Filter
         }
     }
 
-    public void destroy(  )
+    public final void destroy(  )
     {
         _solrDispatchFilter.destroy(  );
     }
