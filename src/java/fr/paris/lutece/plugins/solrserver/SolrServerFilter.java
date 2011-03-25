@@ -57,24 +57,24 @@ public class SolrServerFilter implements Filter
     public static final String SOLR_URI = AppPropertiesService.getProperty( "solrserver.solr.uri" );
     public static final String SOLR_URI_UPDATE = AppPropertiesService.getProperty( "solrserver.solr.uri.update" );
     public static final String SOLR_URI_SELECT = AppPropertiesService.getProperty( "solrserver.solr.uri.select" );
-    public String _strSolrConf = AppPropertiesService.getProperty( "solrserver.solr.home" );
-    public String _strSolrAbsoluteData = AppPropertiesService.getProperty( "solrserver.solr.absolute.data" );
-    public String _strSolrRelativeData = AppPropertiesService.getProperty( "solrserver.solr.relative.data" );
+    public static final String SOLR_HOME = AppPropertiesService.getProperty( "solrserver.solr.home" );
+    public static final String SOLR_ABSOLUTE_DATA = AppPropertiesService.getProperty( "solrserver.solr.absolute.data" );
+    public static final String SOLR_RELATIVE_DATA = AppPropertiesService.getProperty( "solrserver.solr.relative.data" );
     private SolrDispatchFilter _solrDispatchFilter = new SolrDispatchFilter(  );
 
     public void init( FilterConfig filterConfig ) throws ServletException
     {
         String realPath = filterConfig.getServletContext(  ).getRealPath( "/" );
 
-        System.setProperty( SOLR_HOME_LABEL, realPath + _strSolrConf );
+        System.setProperty( SOLR_HOME_LABEL, realPath + SOLR_HOME );
 
-        if ( _strSolrAbsoluteData != "" )
+        if ( ( SOLR_ABSOLUTE_DATA == null ) || ( SOLR_ABSOLUTE_DATA.length(  ) == 0 ) )
         {
-            System.setProperty( SOLR_DATA_DIR, realPath + _strSolrRelativeData );
+            System.setProperty( SOLR_DATA_DIR, realPath + SOLR_RELATIVE_DATA );
         }
         else
         {
-            System.setProperty( SOLR_DATA_DIR, _strSolrAbsoluteData );
+            System.setProperty( SOLR_DATA_DIR, SOLR_ABSOLUTE_DATA );
         }
 
         _solrDispatchFilter.init( filterConfig );

@@ -33,11 +33,11 @@
  */
 package fr.paris.lutece.plugins.solrserver.web;
 
-import javax.servlet.http.HttpServletRequest;
-
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
 import fr.paris.lutece.util.html.HtmlTemplate;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -47,7 +47,6 @@ import fr.paris.lutece.util.html.HtmlTemplate;
 public class SolrserverJspBean extends PluginAdminPageJspBean
 {
     public static final String RIGHT_MANAGE_SOLRSERVER = "SORLSERVER_ADD_FILE";
-
     private static final String TEMPLATE_FORM = "admin/plugins/solrserver/form.html";
 
     public String getForm( HttpServletRequest request )
