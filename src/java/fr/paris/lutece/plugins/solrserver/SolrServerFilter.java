@@ -60,7 +60,7 @@ public class SolrServerFilter implements Filter
     public static final String SOLR_HOME = AppPropertiesService.getProperty( "solrserver.solr.home" );
     public static final String SOLR_ABSOLUTE_DATA = AppPropertiesService.getProperty( "solrserver.solr.absolute.data" );
     public static final String SOLR_RELATIVE_DATA = AppPropertiesService.getProperty( "solrserver.solr.relative.data" );
-    private SolrDispatchFilter _solrDispatchFilter = new SolrDispatchFilter(  );
+    private SolrDispatchFilter solrDispatchFilter = new SolrDispatchFilter(  );
 
     public final void init( FilterConfig filterConfig ) throws ServletException
     {
@@ -77,8 +77,8 @@ public class SolrServerFilter implements Filter
             System.setProperty( SOLR_DATA_DIR, SOLR_ABSOLUTE_DATA );
         }
 
-        _solrDispatchFilter.init( filterConfig );
-        _solrDispatchFilter.setPathPrefix( SOLR_URI );
+        solrDispatchFilter.init( filterConfig );
+        solrDispatchFilter.setPathPrefix( SOLR_URI );
     }
 
     public final void doFilter( ServletRequest request, ServletResponse response, FilterChain chain )
@@ -93,17 +93,17 @@ public class SolrServerFilter implements Filter
 
             if ( ( adminUser != null ) || ( strRemoteAddr.compareTo( "127.0.0.1" ) == 0 ) )
             {
-                _solrDispatchFilter.doFilter( request, response, chain );
+                solrDispatchFilter.doFilter( request, response, chain );
             }
         }
         else if ( strURI.indexOf( SOLR_URI_SELECT ) > 0 )
         {
-            _solrDispatchFilter.doFilter( request, response, chain );
+            solrDispatchFilter.doFilter( request, response, chain );
         }
     }
 
     public final void destroy(  )
     {
-        _solrDispatchFilter.destroy(  );
+        solrDispatchFilter.destroy(  );
     }
 }

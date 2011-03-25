@@ -49,7 +49,7 @@ public class SolrserverJspBean extends PluginAdminPageJspBean
     public static final String RIGHT_MANAGE_SOLRSERVER = "SORLSERVER_ADD_FILE";
     private static final String TEMPLATE_FORM = "admin/plugins/solrserver/form.html";
 
-    public String getForm( HttpServletRequest request )
+    public final String getForm( HttpServletRequest request )
     {
         HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_FORM, getLocale(  ), null );
 
