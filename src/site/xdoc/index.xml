@@ -36,34 +36,15 @@
 			<subsection name="Links">
 				<p>Visit <a href="http://wiki.apache.org/solr/SolrQuerySyntax">SolrQuerySyntax</a> to learn how to request solR</p>
 			</subsection>
-			<subsection name="slf4j">
-			It can be necessary to exclude slf4j so that it doesn't conflict with others libraries dependencies (ex hibernate).
-			<div class="source">
-			<pre>
-			&lt;dependency&gt;
-				&lt;groupId&gt;fr.paris.lutece.plugins&lt;/groupId&gt;
-				&lt;artifactId&gt;plugin-solrserver&lt;/artifactId&gt;
-				&lt;version&gt;[0.1,)&lt;/version&gt;
-				&lt;type&gt;lutece-plugin&lt;/type&gt;
-				&lt;exclusions&gt;
-					&lt;exclusion&gt;
-						&lt;groupId&gt;org.slf4j&lt;/groupId&gt;
-						&lt;artifactId&gt;slf4j-api&lt;/artifactId&gt;
-					&lt;/exclusion&gt;
-				&lt;/exclusions&gt;
-			&lt;/dependency&gt;
-			</pre>
-			</div>
-			</subsection>
 			<subsection name="Javascript">
 			It's possible to request solr throw javascript :
 			<pre>
 jQuery.ajax({
-	url: "http://w35-associations.apps.paris.fr/searchasso/solr/select?q=*:*&amp;facet=true&amp;facet.field=domaine&amp;rows=0&amp;wt=json&amp;indent=on",
+	url: "/solr/select?q=*:*&amp;facet=true&amp;facet.field=EX1&amp;rows=0&amp;wt=json&amp;indent=on",
 	success: function(data){
 		$('&lt;div/&gt;').text(data.response.numFound).appendTo("#contenu");
-		$.each(data.facet_counts.facet_fields.domaine, function(i,domaine){
-			$('&lt;span/&gt;').text(domaine).appendTo("#contenu");
+		$.each(data.facet_counts.facet_fields.EX1, function(i,EX1){
+			$('&lt;span/&gt;').text(EX1).appendTo("#contenu");
 		});
 	},
 	dataType: 'jsonp',
