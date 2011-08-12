@@ -63,7 +63,7 @@
 
 	<properties>
 		<componentName>solrserver</componentName>
-		<jiraProjectName>LUTECE</jiraProjectName>
+		<jiraProjectName>SOLRSERVER</jiraProjectName>
 		<jiraComponentId>10440</jiraComponentId>
 		<solrVersion>1.4.1</solrVersion>
 	</properties>
