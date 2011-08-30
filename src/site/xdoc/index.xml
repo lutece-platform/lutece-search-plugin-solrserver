@@ -5,10 +5,10 @@
 	</properties>
 	<body>
 		<section name="Solr server for Lutece">
+			<subsection name="Introduction">
 			<p>This plugin embeds solR server in Lutece portal. The goal is to expose solR read only for 
 			everyone and read/write for lutece portal administrators.</p>
 			<p>This plugin can be use with <a href="../module-solrserver-directory/">module-solrserver-directory</a></p>
-			<subsection name="Introduction">
 				<p>Solr will be accessible at http://lutece-portal-uri/solr/</p>
 				<p>Request solR on this URI http://lutece-portal-uri/solr/select/?q=id:*</p>
 				<p>

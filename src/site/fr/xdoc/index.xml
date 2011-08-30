@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<properties>
+		<title>Plugin solrserver</title>
+	</properties>
+	<body>
+		<section name="Plugin solrserver">
+			<subsection name="Introduction">
+				Embarque solr dans la même webapp que Lutece sous forme de Filter j2ee.
+			</subsection>
+		</section>
+	</body>
+</document>
