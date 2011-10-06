@@ -65,7 +65,7 @@
 		<componentName>solrserver</componentName>
 		<jiraProjectName>SOLRSERVER</jiraProjectName>
 		<jiraComponentId>10440</jiraComponentId>
-		<solrVersion>3.4.0</solrVersion>
+		<solrVersion>1.4.1</solrVersion>
 	</properties>
 
     <scm>
