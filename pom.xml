@@ -1,76 +1,77 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<parent>
-		<artifactId>lutece-plugins-pom</artifactId>
-		<groupId>fr.paris.lutece.plugins</groupId>
-		<version>3.7</version>
-	</parent>
+    <parent>
+        <artifactId>lutece-global-pom</artifactId>
+        <groupId>fr.paris.lutece.tools</groupId>
+        <version>3.0</version>
+    </parent>
 
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>fr.paris.lutece.plugins</groupId>
-	<artifactId>plugin-solrserver</artifactId>
-	<packaging>lutece-plugin</packaging>
-	<version>1.0.2-SNAPSHOT</version>
-	<name>add Solr server to Lutece</name>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>fr.paris.lutece.plugins</groupId>
+    <artifactId>plugin-solrserver</artifactId>
+    <packaging>lutece-plugin</packaging>
+    <version>2.0.0-SNAPSHOT</version>
+    <name>Lutece solrserver plugin</name>
 
-	<repositories>
-		<repository>
-			<id>luteceSnapshot</id>
-			<name>luteceSnapshot</name>
-			<url>http://dev.lutece.paris.fr/snapshot_repository</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>lutece</id>
-			<name>luteceRepository</name>
-			<url>http://dev.lutece.paris.fr/maven_repository</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
+    <repositories>
+        <repository>
+            <id>luteceSnapshot</id>
+            <name>luteceSnapshot</name>
+            <url>http://dev.lutece.paris.fr/snapshot_repository</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>lutece</id>
+            <name>luteceRepository</name>
+            <url>http://dev.lutece.paris.fr/maven_repository</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
-	<dependencies>
-		<dependency>
-			<groupId>fr.paris.lutece</groupId>
-			<artifactId>lutece-core</artifactId>
-			<version>[3.0.4-SNAPSHOT,)</version>
-			<type>lutece-core</type>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.solr</groupId>
-			<artifactId>solr-core</artifactId>
-			<version>${solrVersion}</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.solr</groupId>
-			<artifactId>solr-dataimporthandler</artifactId>
-			<version>${solrVersion}</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.4</version>
-			<scope>provided</scope>
-		</dependency>
-	</dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>fr.paris.lutece</groupId>
+            <artifactId>lutece-core</artifactId>
+            <version>[3.0.4-SNAPSHOT,)</version>
+            <type>lutece-core</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-core</artifactId>
+            <version>${solrVersion}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-dataimporthandler</artifactId>
+            <version>${solrVersion}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.4</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
-	<properties>
-		<componentName>solrserver</componentName>
-		<jiraProjectName>SOLRSERVER</jiraProjectName>
-		<jiraComponentId>10440</jiraComponentId>
-		<solrVersion>1.4.1</solrVersion>
-	</properties>
+    <properties>
+        <componentName>solrserver</componentName>
+        <jiraProjectName>SOLRSERVER</jiraProjectName>
+        <jiraComponentId>10440</jiraComponentId>
+        <solrVersion>1.4.1</solrVersion>
+    </properties>
 
     <scm>
-        <connection>scm:svn:http://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/technical/plugin-solrserver</connection>
-        <developerConnection>scm:svn:https://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/technical/plugin-solrserver</developerConnection>
-        <url>http://dev.lutece.paris.fr/viewvc/lutece/portal/trunk/plugins/technical/plugin-solrserver</url>
+        <connection>scm:git:https://github.com/lutece-platform/lutece-search-plugin-solrserver.git</connection>
+        <developerConnection>scm:git:https://github.com/lutece-platform/lutece-search-plugin-solrserver.git</developerConnection>
+        <url>https://github.com/lutece-platform/lutece-search-plugin-solrserver.git</url>
     </scm>
+    
 </project>
