@@ -1,58 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document>
-	<properties>
-		<title>Solr server for Lutece</title>
-	</properties>
-	<body>
-		<section name="Solr server for Lutece">
-			<subsection name="Introduction">
-			<p>This plugin embeds solR server in Lutece portal. The goal is to expose solR read only for 
-			everyone and read/write for lutece portal administrators.</p>
-			<p>This plugin can be use with <a href="../module-solrserver-directory/">module-solrserver-directory</a></p>
-				<p>Solr will be accessible at http://lutece-portal-uri/solr/</p>
-				<p>Request solR on this URI http://lutece-portal-uri/solr/select/?q=id:*</p>
-				<p>
-				Post content in solR on this URI http://lutece-portal-uri/solr/update/... <br />
-				You need to be authentify as a Lutece admin to be able to access /solr/update
-				</p>
-			</subsection>
-			<subsection name="Index CSV files">
-				<p>One can index CSV files in solR embeded in Lutece portal from the backoffice</p>
-				<p>
-				The CSV file must be format like :
-				<div class="source">
-				<pre>
-				id,field1_t,field2_i,field3_t,...
-				dataset_1,toto,521,tutu,...
-				dataset_2,tata,521,titi,...
-				...
-				</pre>
-				</div>
-				The column names are important.<br />
-				You need to have a "id" column to identify a document in solR.<br />
-				Column suffix can be "_t" for text content and "_i" for integer content.
-				</p>
-			</subsection>
-			<subsection name="Links">
-				<p>Visit <a href="http://wiki.apache.org/solr/SolrQuerySyntax">SolrQuerySyntax</a> to learn how to request solR</p>
-			</subsection>
-			<subsection name="Javascript">
-			It's possible to request solr throw javascript :
-			<pre>
+    <properties>
+        <title>Solr server for Lutece</title>
+    </properties>
+    <body>
+        <section name="Solr server for Lutece">
+            <subsection name="Introduction">
+                <p>This plugin embeds SolR server in Lutece portal. The goal is to expose SolR read only for 
+                    everyone and read/write for lutece portal administrators.</p>
+                <p>This plugin can be use with <a href="../module-solrserver-directory/">module-solrserver-directory</a></p>
+                <p>Solr will be accessible at http://lutece-portal-uri/solr/</p>
+                <p>Request solR on this URI http://lutece-portal-uri/solr/select/?q=id:*</p>
+                <p>
+                    Post content in solR on this URI http://lutece-portal-uri/solr/update/... <br />
+                    You need to be authentify as a Lutece admin to be able to access /solr/update
+                </p>
+            </subsection>
+            <subsection name="Index CSV files">
+                <p>One can index CSV files in solR embeded in Lutece portal from the backoffice</p>
+                <p>
+                    The CSV file must be format like :
+                    <div class="source">
+                        <pre>
+id,field1_t,field2_i,field3_t,...
+dataset_1,toto,521,tutu,...
+dataset_2,tata,521,titi,...
+...
+                        </pre>
+                    </div>
+                    The column names are important.<br />
+                    You need to have a "id" column to identify a document in SolR.<br />
+                    Column suffix can be "_t" for text content and "_i" for integer content.
+                </p>
+            </subsection>
+            <subsection name="Links">
+                <p>Visit <a href="http://wiki.apache.org/solr/SolrQuerySyntax">SolrQuerySyntax</a> to learn how to request solR</p>
+            </subsection>
+            <subsection name="Javascript">
+                It's possible to request SolR throw javascript :
+                <pre>
 jQuery.ajax({
-	url: "/solr/select?q=*:*&amp;facet=true&amp;facet.field=EX1&amp;rows=0&amp;wt=json&amp;indent=on",
-	success: function(data){
-		$('&lt;div/&gt;').text(data.response.numFound).appendTo("#contenu");
-		$.each(data.facet_counts.facet_fields.EX1, function(i,EX1){
-			$('&lt;span/&gt;').text(EX1).appendTo("#contenu");
-		});
-	},
-	dataType: 'jsonp',
-	jsonp: 'json.wrf'
+    url: "/solr/select?q=*:*&amp;facet=true&amp;facet.field=EX1&amp;rows=0&amp;wt=json&amp;indent=on",
+    success: function(data){
+        $('&lt;div/&gt;').text(data.response.numFound).appendTo("#contenu");
+        $.each(data.facet_counts.facet_fields.EX1, function(i,EX1){
+        $('&lt;span/&gt;').text(EX1).appendTo("#contenu");
+    });
+},
+dataType: 'jsonp',
+jsonp: 'json.wrf'
 });
-			</pre>
-			</subsection>
+                </pre>
+            </subsection>
 
-		</section>
-	</body>
+        </section>
+    </body>
 </document>
