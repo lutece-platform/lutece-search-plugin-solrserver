@@ -17,7 +17,7 @@
     <filters>
         <filter>
             <filter-name>solrserver</filter-name>
-            <url-pattern>/solr/*</url-pattern>
+            <url-pattern>/solrserver/*</url-pattern>
             <filter-class>fr.paris.lutece.plugins.solrserver.SolrServerFilter</filter-class>
         </filter>
     </filters>
