@@ -57,6 +57,8 @@ public class SolrServerFilter implements Filter
     public static final String SOLR_URI = AppPropertiesService.getProperty( "solrserver.solr.uri" );
     public static final String SOLR_URI_UPDATE = AppPropertiesService.getProperty( "solrserver.solr.uri.update" );
     public static final String SOLR_URI_SELECT = AppPropertiesService.getProperty( "solrserver.solr.uri.select" );
+    public static final String SOLR_URI_AUTOCOMPLETE = AppPropertiesService.getProperty( "solrserver.solr.uri.autoComplete" );
+    
     public static final String SOLR_HOME = AppPropertiesService.getProperty( "solrserver.solr.home" );
     public static final String SOLR_ABSOLUTE_DATA = AppPropertiesService.getProperty( "solrserver.solr.absolute.data" );
     public static final String SOLR_RELATIVE_DATA = AppPropertiesService.getProperty( "solrserver.solr.relative.data" );
@@ -100,6 +102,11 @@ public class SolrServerFilter implements Filter
         {
             solrDispatchFilter.doFilter( request, response, chain );
         }
+        else if ( strURI.indexOf( SOLR_URI_AUTOCOMPLETE ) > 0 )
+        {
+            solrDispatchFilter.doFilter( request, response, chain );
+        }
+        
     }
 
     public final void destroy(  )
