@@ -45,12 +45,13 @@ import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 
-public class SolrServerFilter implements Filter
+public class SolrServerFilter extends SolrDispatchFilter
 {
     public static final String SOLR_DATA_DIR = "solr.data.dir";
     public static final String SOLR_HOME_LABEL = "solr.solr.home";
@@ -64,7 +65,8 @@ public class SolrServerFilter implements Filter
     public static final String SOLR_RELATIVE_DATA = AppPropertiesService.getProperty( "solrserver.solr.relative.data" );
     private SolrDispatchFilter solrDispatchFilter = new SolrDispatchFilter(  );
 
-    public final void init( FilterConfig filterConfig ) throws ServletException
+    @Override
+    public  void init( FilterConfig filterConfig ) throws ServletException
     {
         String realPath = filterConfig.getServletContext(  ).getRealPath( "/" );
 
@@ -79,14 +81,15 @@ public class SolrServerFilter implements Filter
             System.setProperty( SOLR_DATA_DIR, SOLR_ABSOLUTE_DATA );
         }
 
-        solrDispatchFilter.init( filterConfig );
-        solrDispatchFilter.setPathPrefix( SOLR_URI );
+        super.init( filterConfig );
+        super.setPathPrefix( SOLR_URI );
     }
-
-    public final void doFilter( ServletRequest request, ServletResponse response, FilterChain chain )
+    @Override
+    public  void doFilter( ServletRequest request, ServletResponse response, FilterChain chain )
         throws IOException, ServletException
     {
         String strURI = ( (HttpServletRequest) request ).getRequestURI(  );
+        ServletInputStream input= request.getInputStream();
 
         if ( strURI.indexOf( SOLR_URI_UPDATE ) > 0 )
         {
@@ -95,22 +98,22 @@ public class SolrServerFilter implements Filter
 
             if ( ( adminUser != null ) || ( strRemoteAddr.compareTo( "127.0.0.1" ) == 0 ) )
             {
-                solrDispatchFilter.doFilter( request, response, chain );
+                super.doFilter( request, response, chain );
             }
         }
         else if ( strURI.indexOf( SOLR_URI_SELECT ) > 0 )
         {
-            solrDispatchFilter.doFilter( request, response, chain );
+            super.doFilter( request, response, chain );
         }
         else if ( strURI.indexOf( SOLR_URI_AUTOCOMPLETE ) > 0 )
         {
-            solrDispatchFilter.doFilter( request, response, chain );
+            super.doFilter( request, response, chain );
         }
         
     }
-
-    public final void destroy(  )
+    @Override
+    public  void destroy(  )
     {
-        solrDispatchFilter.destroy(  );
+        super.destroy(  );
     }
 }
