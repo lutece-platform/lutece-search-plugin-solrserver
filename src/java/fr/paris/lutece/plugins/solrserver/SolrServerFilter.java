@@ -37,6 +37,7 @@ import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
+import org.apache.solr.common.util.FastInputStream;
 import org.apache.solr.servlet.SolrDispatchFilter;
 
 import java.io.IOException;
@@ -84,12 +85,13 @@ public class SolrServerFilter extends SolrDispatchFilter
         super.init( filterConfig );
         super.setPathPrefix( SOLR_URI );
     }
-    @Override
+  /*  @Override
     public  void doFilter( ServletRequest request, ServletResponse response, FilterChain chain )
         throws IOException, ServletException
     {
         String strURI = ( (HttpServletRequest) request ).getRequestURI(  );
-        ServletInputStream input= request.getInputStream();
+     //   ServletInputStream input= request.getInputStream();
+        in = FastInputStream.wrap( req.getInputStream());
 
         if ( strURI.indexOf( SOLR_URI_UPDATE ) > 0 )
         {
@@ -98,6 +100,7 @@ public class SolrServerFilter extends SolrDispatchFilter
 
             if ( ( adminUser != null ) || ( strRemoteAddr.compareTo( "127.0.0.1" ) == 0 ) )
             {
+            	
                 super.doFilter( request, response, chain );
             }
         }
@@ -110,7 +113,7 @@ public class SolrServerFilter extends SolrDispatchFilter
             super.doFilter( request, response, chain );
         }
         
-    }
+    }*/
     @Override
     public  void destroy(  )
     {
