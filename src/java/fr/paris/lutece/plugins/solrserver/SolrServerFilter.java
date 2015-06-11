@@ -85,24 +85,23 @@ public class SolrServerFilter extends SolrDispatchFilter
         super.init( filterConfig );
         super.setPathPrefix( SOLR_URI );
     }
-  /*  @Override
+    @Override
     public  void doFilter( ServletRequest request, ServletResponse response, FilterChain chain )
         throws IOException, ServletException
     {
         String strURI = ( (HttpServletRequest) request ).getRequestURI(  );
-     //   ServletInputStream input= request.getInputStream();
-        in = FastInputStream.wrap( req.getInputStream());
 
+      
         if ( strURI.indexOf( SOLR_URI_UPDATE ) > 0 )
         {
             AdminUser adminUser = AdminUserService.getAdminUser( (HttpServletRequest) request );
             String strRemoteAddr = ( (HttpServletRequest) request ).getRemoteAddr(  );
 
-            if ( ( adminUser != null ) || ( strRemoteAddr.compareTo( "127.0.0.1" ) == 0 ) )
-            {
+          //  if ( ( adminUser != null ) || ( strRemoteAddr.compareTo( "127.0.0.1" ) == 0 ) )
+           // {
             	
                 super.doFilter( request, response, chain );
-            }
+           // }
         }
         else if ( strURI.indexOf( SOLR_URI_SELECT ) > 0 )
         {
@@ -113,7 +112,7 @@ public class SolrServerFilter extends SolrDispatchFilter
             super.doFilter( request, response, chain );
         }
         
-    }*/
+    }
     @Override
     public  void destroy(  )
     {
