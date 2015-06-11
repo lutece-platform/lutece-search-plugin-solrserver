@@ -64,7 +64,8 @@ public class SolrServerFilter extends SolrDispatchFilter
     public static final String SOLR_HOME = AppPropertiesService.getProperty( "solrserver.solr.home" );
     public static final String SOLR_ABSOLUTE_DATA = AppPropertiesService.getProperty( "solrserver.solr.absolute.data" );
     public static final String SOLR_RELATIVE_DATA = AppPropertiesService.getProperty( "solrserver.solr.relative.data" );
-    private SolrDispatchFilter solrDispatchFilter = new SolrDispatchFilter(  );
+    public static final String SOLR_ADMIN_CLIENT = AppPropertiesService.getProperty("solrserver.solr.host.client", "127.0.0.1" );
+   // private SolrDispatchFilter solrDispatchFilter = new SolrDispatchFilter(  );
 
     @Override
     public  void init( FilterConfig filterConfig ) throws ServletException
@@ -97,11 +98,11 @@ public class SolrServerFilter extends SolrDispatchFilter
             AdminUser adminUser = AdminUserService.getAdminUser( (HttpServletRequest) request );
             String strRemoteAddr = ( (HttpServletRequest) request ).getRemoteAddr(  );
 
-          //  if ( ( adminUser != null ) || ( strRemoteAddr.compareTo( "127.0.0.1" ) == 0 ) )
-           // {
+            if ( ( adminUser != null ) || ( strRemoteAddr.compareTo( SOLR_ADMIN_CLIENT ) == 0 ) )
+            {
             	
                 super.doFilter( request, response, chain );
-           // }
+            }
         }
         else if ( strURI.indexOf( SOLR_URI_SELECT ) > 0 )
         {
