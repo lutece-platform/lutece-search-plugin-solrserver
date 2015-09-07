@@ -26,6 +26,11 @@
 <config>
   <luceneMatchVersion>4.9</luceneMatchVersion>
   <requestDispatcher handleSelect="false"/>
-  <requestHandler name="/select" class="solr.SearchHandler"/>
+  <requestHandler name="/select" class="solr.SearchHandler">
+    <lst name="defaults">
+      <str name="df">content</str>
+      <str name="q.op">AND</str>
+    </lst>
+  </requestHandler>
   <requestHandler name="/update" class="solr.UpdateRequestHandler"/>
 </config>

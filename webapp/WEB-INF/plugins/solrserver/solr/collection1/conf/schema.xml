@@ -63,6 +63,4 @@
     <dynamicField name="*_geoloc_1_coordinate" type="double" indexed="true" stored="true"/>
   </fields>
   <uniqueKey>uid</uniqueKey>
-  <defaultSearchField>content</defaultSearchField>
-  <solrQueryParser defaultOperator="AND"/>
 </schema>
