@@ -50,6 +50,7 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 
 
 public class SolrServerFilter extends SolrDispatchFilter
@@ -84,14 +85,13 @@ public class SolrServerFilter extends SolrDispatchFilter
         }
 
         super.init( filterConfig );
-        super.setPathPrefix( SOLR_URI );
     }
     @Override
     public  void doFilter( ServletRequest request, ServletResponse response, FilterChain chain )
         throws IOException, ServletException
     {
         String strURI = ( (HttpServletRequest) request ).getRequestURI(  );
-
+        boolean bCallSolr = false;
       
         if ( strURI.indexOf( SOLR_URI_UPDATE ) > 0 )
         {
@@ -100,16 +100,28 @@ public class SolrServerFilter extends SolrDispatchFilter
 
             if ( ( adminUser != null ) || ( strRemoteAddr.compareTo( SOLR_ADMIN_CLIENT ) == 0 ) )
             {
-            	
-                super.doFilter( request, response, chain );
+                bCallSolr = true;
             }
         }
         else if ( strURI.indexOf( SOLR_URI_SELECT ) > 0 )
         {
-            super.doFilter( request, response, chain );
+            bCallSolr = true;
         }
         else if ( strURI.indexOf( SOLR_URI_AUTOCOMPLETE ) > 0 )
         {
+            bCallSolr = true;
+        }
+
+        if ( bCallSolr ) {
+            request = new HttpServletRequestWrapper((HttpServletRequest)request) {
+                @Override public String getServletPath() {
+                    String path = ((HttpServletRequest) getRequest()).getServletPath();
+                    path = path.substring( SOLR_URI.length() );
+                    path = "/collection1" + path;
+
+                    return path;
+                };
+            };
             super.doFilter( request, response, chain );
         }
         
