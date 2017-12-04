@@ -35,8 +35,7 @@ package fr.paris.lutece.plugins.solrserver;
 
 import fr.paris.lutece.test.LuteceTestCase;
 
-import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.common.SolrInputDocument;
 
 import java.util.ArrayList;
@@ -57,7 +56,7 @@ public class SolrServerTest extends LuteceTestCase
      */
     public void testPushDoc(  ) throws Exception
     {
-        HttpSolrServer server = new HttpSolrServer( "http://localhost:8080/solrserver/solr" );
+        HttpSolrClient server = new HttpSolrClient( "http://localhost:8080/solrserver/solr" );
 
         server.deleteByQuery( "*:*" ); // delete everything!
         server.commit(  );
