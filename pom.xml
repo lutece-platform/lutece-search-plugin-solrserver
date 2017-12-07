@@ -49,6 +49,38 @@
             <artifactId>solr-dataimporthandler</artifactId>
             <version>${solrVersion}</version>
         </dependency>
+
+        <!--
+              lutece-core has a dependency only on jackson-databind
+              which then has a transitive dependency to jackson-annotations and
+              jackson-core. But solr has direct dependencies to all 3 jackson-*
+              artifacts. So we get jackson-databind from the core and the other 2
+              from solr, causing a version mismatch, because of maven's simple
+              dependency version conflict resolution (closest from the root)
+              This happens only when using maven on this project because
+              in other projects, lutece-core is closer to the root than the plugins.
+              So for tests in this project, force a version of jackson. Scope test is not transitive
+              so it will not affect other projects
+        -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.8.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.8.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.8.4</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <properties>

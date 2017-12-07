@@ -33,13 +33,37 @@
  */
 package fr.paris.lutece.plugins.solrserver;
 
+import fr.paris.lutece.portal.service.filter.FilterService;
+import fr.paris.lutece.portal.service.filter.LuteceFilter;
+import fr.paris.lutece.portal.service.filter.LuteceFilterChain;
+import fr.paris.lutece.portal.service.init.AppInit;
+import fr.paris.lutece.portal.service.plugin.PluginService;
+import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.test.LuteceTestCase;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.common.SolrInputDocument;
+import org.springframework.mock.web.DelegatingServletInputStream;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockServletConfig;
+import org.springframework.mock.web.MockServletContext;
+import org.springframework.util.StreamUtils;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -48,34 +72,104 @@ import java.util.Collection;
  */
 public class SolrServerTest extends LuteceTestCase
 {
+
+    public void setUp( ) throws Exception
+    {
+        //Because the LuteceTestCase initializes lutece without a servletcontext
+        //it needs to be done manually here
+        if( _bInit )
+        {
+            throw new Exception( "SolrServerTest must be the one to initialize LUTECE" );
+        }
+        else
+        {
+
+            String _strResourcesDir = getClass( ).getResource( "/" ).toString( ).replaceFirst( "file:", "" ).replaceFirst( "target/.*", "target/lutece/" );
+            System.out.println( "-------------resourcesDir------------" + _strResourcesDir );
+            AppPathService.init( _strResourcesDir );
+
+            try ( InputStream in = this.getClass( ).getResourceAsStream( "plugins.dat" ) )
+            {
+                try ( OutputStream out = new FileOutputStream(
+                            new File( _strResourcesDir + "WEB-INF/plugins/", "plugins.dat" ) ) )
+                {
+                    IOUtils.copy( in, out );
+                }
+            }
+
+            MockServletContext context = new MockServletContext( ) {
+                @Override
+                public String getRealPath(String path) {
+                    return _strResourcesDir + path;
+                }
+            };
+            AppInit.initServices( context, "/WEB-INF/conf/", null );
+
+            _bInit = true;
+            System.out.println( "Lutece services initialized" );
+            PluginService.getPlugin( "solrserver" ).install( );
+            System.out.println( "SolrServer installed" );
+        }
+
+        super.setUp( );
+    }
+
+    public MockHttpServletRequest newSolrRequest() {
+        return new MockHttpServletRequest( ) {
+            @Override
+            public ServletInputStream getInputStream() {
+                return new DelegatingServletInputStream(StreamUtils.emptyInput()) {
+                    @Override public boolean isFinished() {
+                        return true;
+                    }
+                };
+            }
+        };
+    }
     /**
-     * make sure it's well configure before running this test
-     * http://localhost:8080/solrserver/solr/select/?q=*
-     *
      * @throws Exception
      */
     public void testPushDoc(  ) throws Exception
     {
-        HttpSolrClient server = new HttpSolrClient( "http://localhost:8080/solrserver/solr" );
+        //Apparently solr needs time to start
+        Thread.sleep( 1000 );
 
-        server.deleteByQuery( "*:*" ); // delete everything!
-        server.commit(  );
+        LuteceFilter filter = FilterService.getInstance( ).getFilters( ).stream( ).filter( f ->
+                "solrserver".equals( f.getName( ) )
+        ).findFirst( ).get( );
 
-        SolrInputDocument doc1 = new SolrInputDocument(  );
-        doc1.addField( "id", "id1", 1.0f );
-        doc1.addField( "name", "doc1", 1.0f );
-        doc1.addField( "price", 10 );
+        MockHttpServletResponse response;
+        MockHttpServletRequest request;
+        LuteceFilterChain lfc;
 
-        SolrInputDocument doc2 = new SolrInputDocument(  );
-        doc2.addField( "id", "id2", 1.0f );
-        doc2.addField( "name", "doc2", 1.0f );
-        doc2.addField( "price", 20 );
+        response = new MockHttpServletResponse( );
+        lfc = new LuteceFilterChain( );
+        request = newSolrRequest( );
+        request.setRequestURI( "/lutece/solrserver/solr/update" );
+        request.setQueryString( "stream.body=%3Cdelete%3E%3Cquery%3E%2A:%2A%3C/query%3E%3C/delete%3E&commit=true");
+        request.setServletPath( SolrServerFilter.SOLR_URI + "/update" );
+        filter.getFilter( ).doFilter( request, response, lfc );
 
-        Collection<SolrInputDocument> docs = new ArrayList<SolrInputDocument>(  );
-        docs.add( doc1 );
-        docs.add( doc2 );
-        server.add( docs );
+        response = new MockHttpServletResponse( );
+        lfc = new LuteceFilterChain( );
+        request = newSolrRequest( );
+        request.setRequestURI( "/lutece/solrserver/solr/update" );
+        request.setServletPath( SolrServerFilter.SOLR_URI + "/update" );
+        request.setQueryString("stream.body=<add><doc><field name=\"uid\">junit1</field><field name=\"content\">junitcontent1</field></doc></add>&commit=true");
+        filter.getFilter( ).doFilter( request, response, lfc );
 
-        server.commit(  );
+        response = new MockHttpServletResponse( );
+        lfc = new LuteceFilterChain( );
+        request = newSolrRequest( );
+        request.setRequestURI( "/lutece/solrserver/solr/select" );
+        request.setServletPath( SolrServerFilter.SOLR_URI + "/select" );
+        request.setQueryString("q=*:*&wt=json");
+        filter.getFilter( ).doFilter( request, response, lfc );
+        JsonNode res = new ObjectMapper().readTree( response.getContentAsString( ) );
+        JsonNode responseJson = res.get( "response" );
+        assertEquals( 1, responseJson.get("numFound").asInt( ) );
+        JsonNode doc = res.get( "response" ).get("docs").get( 0 );
+        assertEquals( "junit1", doc.get("uid").asText( ) );
+        assertEquals( "junitcontent1", doc.get( "content" ).asText( ) );
     }
 }
