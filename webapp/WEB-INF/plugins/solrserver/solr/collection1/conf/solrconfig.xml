@@ -25,7 +25,6 @@
 -->
 <config>
   <luceneMatchVersion>LUCENE_CURRENT</luceneMatchVersion>
-  <requestDispatcher handleSelect="false"/>
   <requestHandler name="/select" class="solr.SearchHandler">
     <lst name="defaults">
       <str name="df">content</str>
