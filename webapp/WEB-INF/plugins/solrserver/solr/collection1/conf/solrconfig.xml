@@ -27,7 +27,7 @@
   <luceneMatchVersion>LUCENE_CURRENT</luceneMatchVersion>
   <requestHandler name="/select" class="solr.SearchHandler">
     <lst name="defaults">
-      <str name="df">content</str>
+      <str name="df">text</str>
       <str name="q.op">AND</str>
     </lst>
   </requestHandler>
@@ -39,7 +39,7 @@
       <str name="classname">org.apache.solr.spelling.suggest.Suggester</str>
       <str name="lookupImpl">org.apache.solr.spelling.suggest.tst.TSTLookup</str>-->
       <str name="dictionaryImpl">DocumentDictionaryFactory</str>
-      <str name="field">content</str>  <!-- the indexed field to derive suggestions from -->
+      <str name="field">text</str>  <!-- the indexed field to derive suggestions from -->
       <str name="buildOnCommit">true</str>
       <str name="buildOnOptimize">true</str>
     </lst>

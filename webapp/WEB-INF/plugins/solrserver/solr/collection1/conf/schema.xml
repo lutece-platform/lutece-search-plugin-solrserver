@@ -40,14 +40,14 @@
     <field name="url" type="text" stored="true" indexed="true"/>
     <field name="date" type="date" stored="true" indexed="true"/>
     <field name="title" type="text" indexed="true" stored="true"/>
-    <field name="uid" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
+    <field name="uid" type="string" indexed="true" stored="true" required="true"/>
     <field name="content" type="text" stored="true" indexed="true" required="true"/>
     <field name="site" type="string" stored="true" indexed="true"/>
     <field name="summary" type="text" stored="true" indexed="true"/>
     <field name="type" type="string" stored="true" indexed="true"/>
     <field name="role" type="string" indexed="true" stored="true"/>
     <field name="xml_content" type="text" indexed="true" stored="true"/>
-    <field name="categorie" type="string" indexed="true" stored="true"/>
+    <field name="categorie" type="string" indexed="true" stored="true" multiValued="true"/>
     <field name="hiedate" type="string" indexed="true" stored="true"/>
     <field name="metadata" type="string" indexed="true" stored="true"/>
     <field name="document_portlet_id" type="string" indexed="true" stored="true"/>
@@ -61,6 +61,13 @@
     <dynamicField name="*_geoloc" type="geoloc" indexed="true" stored="true"/>
     <dynamicField name="*_geoloc_0_coordinate" type="double" indexed="true" stored="true"/>
     <dynamicField name="*_geoloc_1_coordinate" type="double" indexed="true" stored="true"/>
+
+    <field name="text" type="text" indexed="true" stored="false" multiValued="true"/>
+    <copyField source="title" dest="text"/>
+    <copyField source="categorie" dest="text"/>
+    <copyField source="summary" dest="text"/>
+    <copyField source="content" dest="text"/>
+    <copyField source="metadata" dest="text"/>
   </fields>
   <uniqueKey>uid</uniqueKey>
 </schema>
