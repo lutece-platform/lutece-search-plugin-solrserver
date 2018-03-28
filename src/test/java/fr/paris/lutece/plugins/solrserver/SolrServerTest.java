@@ -132,7 +132,7 @@ public class SolrServerTest extends LuteceTestCase
     public void testPushDoc(  ) throws Exception
     {
         //Apparently solr needs time to start
-        Thread.sleep( 1000 );
+        Thread.sleep( 3000 );
 
         LuteceFilter filter = FilterService.getInstance( ).getFilters( ).stream( ).filter( f ->
                 "solrserver".equals( f.getName( ) )
@@ -149,6 +149,7 @@ public class SolrServerTest extends LuteceTestCase
         request.setQueryString( "stream.body=%3Cdelete%3E%3Cquery%3E%2A:%2A%3C/query%3E%3C/delete%3E&commit=true");
         request.setServletPath( SolrServerFilter.SOLR_URI + "/update" );
         filter.getFilter( ).doFilter( request, response, lfc );
+        Thread.sleep( 100 );
 
         response = new MockHttpServletResponse( );
         lfc = new LuteceFilterChain( );
@@ -157,6 +158,7 @@ public class SolrServerTest extends LuteceTestCase
         request.setServletPath( SolrServerFilter.SOLR_URI + "/update" );
         request.setQueryString("stream.body=<add><doc><field name=\"uid\">junit1</field><field name=\"content\">junitcontent1</field></doc></add>&commit=true");
         filter.getFilter( ).doFilter( request, response, lfc );
+        Thread.sleep( 100 );
 
         response = new MockHttpServletResponse( );
         lfc = new LuteceFilterChain( );
