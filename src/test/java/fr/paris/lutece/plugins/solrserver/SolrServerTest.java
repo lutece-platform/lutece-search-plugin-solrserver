@@ -146,7 +146,7 @@ public class SolrServerTest extends LuteceTestCase
         lfc = new LuteceFilterChain( );
         request = newSolrRequest( );
         request.setRequestURI( "/lutece/solrserver/solr/update" );
-        request.setQueryString( "stream.body=%3Cdelete%3E%3Cquery%3E%2A:%2A%3C/query%3E%3C/delete%3E&commit=true");
+        request.setQueryString( "stream.body=<delete><query>*:*</query></delete>&commit=true");
         request.setServletPath( SolrServerFilter.SOLR_URI + "/update" );
         filter.getFilter( ).doFilter( request, response, lfc );
         Thread.sleep( 100 );
