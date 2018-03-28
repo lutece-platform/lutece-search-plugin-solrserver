@@ -132,7 +132,9 @@ public class SolrServerTest extends LuteceTestCase
     public void testPushDoc(  ) throws Exception
     {
         //Apparently solr needs time to start
-        Thread.sleep( 3000 );
+        long nWait = 3000;
+        System.out.println("Waiting " + nWait/1000.0 + " seconds for the solrserver to settle");
+        Thread.sleep( nWait );
 
         LuteceFilter filter = FilterService.getInstance( ).getFilters( ).stream( ).filter( f ->
                 "solrserver".equals( f.getName( ) )
@@ -148,6 +150,7 @@ public class SolrServerTest extends LuteceTestCase
         request.setRequestURI( "/lutece/solrserver/solr/update" );
         request.setQueryString( "stream.body=<delete><query>*:*</query></delete>&commit=true");
         request.setServletPath( SolrServerFilter.SOLR_URI + "/update" );
+        System.out.println( request.getRequestURI( ) + "?" + request.getQueryString( ) );
         filter.getFilter( ).doFilter( request, response, lfc );
         Thread.sleep( 100 );
 
@@ -157,6 +160,7 @@ public class SolrServerTest extends LuteceTestCase
         request.setRequestURI( "/lutece/solrserver/solr/update" );
         request.setServletPath( SolrServerFilter.SOLR_URI + "/update" );
         request.setQueryString("stream.body=<add><doc><field name=\"uid\">junit1</field><field name=\"content\">junitcontent1</field></doc></add>&commit=true");
+        System.out.println( request.getRequestURI( ) + "?" + request.getQueryString( ) );
         filter.getFilter( ).doFilter( request, response, lfc );
         Thread.sleep( 100 );
 
@@ -166,8 +170,11 @@ public class SolrServerTest extends LuteceTestCase
         request.setRequestURI( "/lutece/solrserver/solr/select" );
         request.setServletPath( SolrServerFilter.SOLR_URI + "/select" );
         request.setQueryString("q=*:*&wt=json");
+        System.out.println( request.getRequestURI( ) + "?" + request.getQueryString( ) );
         filter.getFilter( ).doFilter( request, response, lfc );
-        JsonNode res = new ObjectMapper().readTree( response.getContentAsString( ) );
+        String strResponse = response.getContentAsString( );
+        System.out.println( strResponse );
+        JsonNode res = new ObjectMapper().readTree( strResponse );
         JsonNode responseJson = res.get( "response" );
         assertEquals( 1, responseJson.get("numFound").asInt( ) );
         JsonNode doc = res.get( "response" ).get("docs").get( 0 );
