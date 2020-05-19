@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,7 +65,6 @@ import java.util.Collection;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
  *
  * @url http://wiki.apache.org/solr/Solrj
@@ -75,9 +74,9 @@ public class SolrServerTest extends LuteceTestCase
 
     public void setUp( ) throws Exception
     {
-        //Because the LuteceTestCase initializes lutece without a servletcontext
-        //it needs to be done manually here
-        if( _bInit )
+        // Because the LuteceTestCase initializes lutece without a servletcontext
+        // it needs to be done manually here
+        if ( _bInit )
         {
             throw new Exception( "SolrServerTest must be the one to initialize LUTECE" );
         }
@@ -90,16 +89,17 @@ public class SolrServerTest extends LuteceTestCase
 
             try ( InputStream in = this.getClass( ).getResourceAsStream( "plugins.dat" ) )
             {
-                try ( OutputStream out = new FileOutputStream(
-                            new File( _strResourcesDir + "WEB-INF/plugins/", "plugins.dat" ) ) )
+                try ( OutputStream out = new FileOutputStream( new File( _strResourcesDir + "WEB-INF/plugins/", "plugins.dat" ) ) )
                 {
                     IOUtils.copy( in, out );
                 }
             }
 
-            MockServletContext context = new MockServletContext( ) {
+            MockServletContext context = new MockServletContext( )
+            {
                 @Override
-                public String getRealPath(String path) {
+                public String getRealPath( String path )
+                {
                     return _strResourcesDir + path;
                 }
             };
@@ -114,31 +114,36 @@ public class SolrServerTest extends LuteceTestCase
         super.setUp( );
     }
 
-    public MockHttpServletRequest newSolrRequest() {
-        return new MockHttpServletRequest( ) {
+    public MockHttpServletRequest newSolrRequest( )
+    {
+        return new MockHttpServletRequest( )
+        {
             @Override
-            public ServletInputStream getInputStream() {
-                return new DelegatingServletInputStream(StreamUtils.emptyInput()) {
-                    @Override public boolean isFinished() {
+            public ServletInputStream getInputStream( )
+            {
+                return new DelegatingServletInputStream( StreamUtils.emptyInput( ) )
+                {
+                    @Override
+                    public boolean isFinished( )
+                    {
                         return true;
                     }
                 };
             }
         };
     }
+
     /**
      * @throws Exception
      */
-    public void testPushDoc(  ) throws Exception
+    public void testPushDoc( ) throws Exception
     {
-        //Apparently solr needs time to start
+        // Apparently solr needs time to start
         long nWait = 3000;
-        System.out.println("Waiting " + nWait/1000.0 + " seconds for the solrserver to settle");
+        System.out.println( "Waiting " + nWait / 1000.0 + " seconds for the solrserver to settle" );
         Thread.sleep( nWait );
 
-        LuteceFilter filter = FilterService.getInstance( ).getFilters( ).stream( ).filter( f ->
-                "solrserver".equals( f.getName( ) )
-        ).findFirst( ).get( );
+        LuteceFilter filter = FilterService.getInstance( ).getFilters( ).stream( ).filter( f -> "solrserver".equals( f.getName( ) ) ).findFirst( ).get( );
 
         MockHttpServletResponse response;
         MockHttpServletRequest request;
@@ -148,7 +153,7 @@ public class SolrServerTest extends LuteceTestCase
         lfc = new LuteceFilterChain( );
         request = newSolrRequest( );
         request.setRequestURI( "/lutece/solrserver/solr/update" );
-        request.setQueryString( "stream.body=<delete><query>*:*</query></delete>&commit=true");
+        request.setQueryString( "stream.body=<delete><query>*:*</query></delete>&commit=true" );
         request.setServletPath( SolrServerFilter.SOLR_URI + "/update" );
         System.out.println( request.getRequestURI( ) + "?" + request.getQueryString( ) );
         filter.getFilter( ).doFilter( request, response, lfc );
@@ -159,7 +164,8 @@ public class SolrServerTest extends LuteceTestCase
         request = newSolrRequest( );
         request.setRequestURI( "/lutece/solrserver/solr/update" );
         request.setServletPath( SolrServerFilter.SOLR_URI + "/update" );
-        request.setQueryString("stream.body=<add><doc><field name=\"uid\">junit1</field><field name=\"content\">junitcontent1</field></doc></add>&commit=true");
+        request.setQueryString(
+                "stream.body=<add><doc><field name=\"uid\">junit1</field><field name=\"content\">junitcontent1</field></doc></add>&commit=true" );
         System.out.println( request.getRequestURI( ) + "?" + request.getQueryString( ) );
         filter.getFilter( ).doFilter( request, response, lfc );
         Thread.sleep( 100 );
@@ -169,16 +175,16 @@ public class SolrServerTest extends LuteceTestCase
         request = newSolrRequest( );
         request.setRequestURI( "/lutece/solrserver/solr/select" );
         request.setServletPath( SolrServerFilter.SOLR_URI + "/select" );
-        request.setQueryString("q=*:*&wt=json");
+        request.setQueryString( "q=*:*&wt=json" );
         System.out.println( request.getRequestURI( ) + "?" + request.getQueryString( ) );
         filter.getFilter( ).doFilter( request, response, lfc );
         String strResponse = response.getContentAsString( );
         System.out.println( strResponse );
-        JsonNode res = new ObjectMapper().readTree( strResponse );
+        JsonNode res = new ObjectMapper( ).readTree( strResponse );
         JsonNode responseJson = res.get( "response" );
-        assertEquals( 1, responseJson.get("numFound").asInt( ) );
-        JsonNode doc = res.get( "response" ).get("docs").get( 0 );
-        assertEquals( "junit1", doc.get("uid").asText( ) );
+        assertEquals( 1, responseJson.get( "numFound" ).asInt( ) );
+        JsonNode doc = res.get( "response" ).get( "docs" ).get( 0 );
+        assertEquals( "junit1", doc.get( "uid" ).asText( ) );
         assertEquals( "junitcontent1", doc.get( "content" ).asText( ) );
     }
 }
