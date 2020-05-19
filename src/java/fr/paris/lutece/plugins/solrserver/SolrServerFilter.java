@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,7 +52,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
-
 public class SolrServerFilter extends SolrDispatchFilter
 {
     public static final String SOLR_DATA_DIR = "solr.data.dir";
@@ -61,21 +60,21 @@ public class SolrServerFilter extends SolrDispatchFilter
     public static final String SOLR_URI_UPDATE = AppPropertiesService.getProperty( "solrserver.solr.uri.update" );
     public static final String SOLR_URI_SELECT = AppPropertiesService.getProperty( "solrserver.solr.uri.select" );
     public static final String SOLR_URI_AUTOCOMPLETE = AppPropertiesService.getProperty( "solrserver.solr.uri.autoComplete" );
-    
+
     public static final String SOLR_HOME = AppPropertiesService.getProperty( "solrserver.solr.home" );
     public static final String SOLR_ABSOLUTE_DATA = AppPropertiesService.getProperty( "solrserver.solr.absolute.data" );
     public static final String SOLR_RELATIVE_DATA = AppPropertiesService.getProperty( "solrserver.solr.relative.data" );
-    public static final String SOLR_ADMIN_CLIENT = AppPropertiesService.getProperty("solrserver.solr.host.client", "127.0.0.1" );
-   // private SolrDispatchFilter solrDispatchFilter = new SolrDispatchFilter(  );
+    public static final String SOLR_ADMIN_CLIENT = AppPropertiesService.getProperty( "solrserver.solr.host.client", "127.0.0.1" );
+    // private SolrDispatchFilter solrDispatchFilter = new SolrDispatchFilter( );
 
     @Override
-    public  void init( FilterConfig filterConfig ) throws ServletException
+    public void init( FilterConfig filterConfig ) throws ServletException
     {
-        String realPath = filterConfig.getServletContext(  ).getRealPath( "/" );
+        String realPath = filterConfig.getServletContext( ).getRealPath( "/" );
 
         System.setProperty( SOLR_HOME_LABEL, realPath + SOLR_HOME );
 
-        if ( ( SOLR_ABSOLUTE_DATA == null ) || ( SOLR_ABSOLUTE_DATA.length(  ) == 0 ) )
+        if ( ( SOLR_ABSOLUTE_DATA == null ) || ( SOLR_ABSOLUTE_DATA.length( ) == 0 ) )
         {
             System.setProperty( SOLR_DATA_DIR, realPath + SOLR_RELATIVE_DATA );
         }
@@ -86,37 +85,43 @@ public class SolrServerFilter extends SolrDispatchFilter
 
         super.init( filterConfig );
     }
+
     @Override
-    public  void doFilter( ServletRequest request, ServletResponse response, FilterChain chain )
-        throws IOException, ServletException
+    public void doFilter( ServletRequest request, ServletResponse response, FilterChain chain ) throws IOException, ServletException
     {
-        String strURI = ( (HttpServletRequest) request ).getRequestURI(  );
+        String strURI = ( (HttpServletRequest) request ).getRequestURI( );
         boolean bCallSolr = false;
-      
+
         if ( strURI.indexOf( SOLR_URI_UPDATE ) > 0 )
         {
             AdminUser adminUser = AdminUserService.getAdminUser( (HttpServletRequest) request );
-            String strRemoteAddr = ( (HttpServletRequest) request ).getRemoteAddr(  );
+            String strRemoteAddr = ( (HttpServletRequest) request ).getRemoteAddr( );
 
             if ( ( adminUser != null ) || ( strRemoteAddr.compareTo( SOLR_ADMIN_CLIENT ) == 0 ) )
             {
                 bCallSolr = true;
             }
         }
-        else if ( strURI.indexOf( SOLR_URI_SELECT ) > 0 )
-        {
-            bCallSolr = true;
-        }
-        else if ( strURI.indexOf( SOLR_URI_AUTOCOMPLETE ) > 0 )
-        {
-            bCallSolr = true;
-        }
+        else
+            if ( strURI.indexOf( SOLR_URI_SELECT ) > 0 )
+            {
+                bCallSolr = true;
+            }
+            else
+                if ( strURI.indexOf( SOLR_URI_AUTOCOMPLETE ) > 0 )
+                {
+                    bCallSolr = true;
+                }
 
-        if ( bCallSolr ) {
-            request = new HttpServletRequestWrapper((HttpServletRequest)request) {
-                @Override public String getServletPath() {
-                    String path = ((HttpServletRequest) getRequest()).getServletPath();
-                    path = path.substring( SOLR_URI.length() );
+        if ( bCallSolr )
+        {
+            request = new HttpServletRequestWrapper( (HttpServletRequest) request )
+            {
+                @Override
+                public String getServletPath( )
+                {
+                    String path = ( (HttpServletRequest) getRequest( ) ).getServletPath( );
+                    path = path.substring( SOLR_URI.length( ) );
                     path = "/collection1" + path;
 
                     return path;
@@ -124,11 +129,12 @@ public class SolrServerFilter extends SolrDispatchFilter
             };
             super.doFilter( request, response, chain );
         }
-        
+
     }
+
     @Override
-    public  void destroy(  )
+    public void destroy( )
     {
-        super.destroy(  );
+        super.destroy( );
     }
 }
