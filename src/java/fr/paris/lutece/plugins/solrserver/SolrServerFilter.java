@@ -66,8 +66,8 @@ public class SolrServerFilter extends SolrDispatchFilter
     public static final String SOLR_ABSOLUTE_DATA = AppPropertiesService.getProperty( "solrserver.solr.absolute.data" );
     public static final String SOLR_RELATIVE_DATA = AppPropertiesService.getProperty( "solrserver.solr.relative.data" );
     public static final String SOLR_ADMIN_CLIENT = AppPropertiesService.getProperty("solrserver.solr.host.client", "127.0.0.1" );
-   // private SolrDispatchFilter solrDispatchFilter = new SolrDispatchFilter(  );
-
+    public static final String SOLR_CORE_NAME = AppPropertiesService.getProperty("solrserver.solr.core.name", "collection1" );
+    
     @Override
     public  void init( FilterConfig filterConfig ) throws ServletException
     {
@@ -93,7 +93,7 @@ public class SolrServerFilter extends SolrDispatchFilter
         String strURI = ( (HttpServletRequest) request ).getRequestURI(  );
         boolean bCallSolr = false;
       
-        if ( strURI.indexOf( SOLR_URI_UPDATE ) > 0 )
+        if ( strURI.indexOf( SOLR_URI_UPDATE ) > -1 )
         {
             AdminUser adminUser = AdminUserService.getAdminUser( (HttpServletRequest) request );
             String strRemoteAddr = ( (HttpServletRequest) request ).getRemoteAddr(  );
@@ -103,11 +103,11 @@ public class SolrServerFilter extends SolrDispatchFilter
                 bCallSolr = true;
             }
         }
-        else if ( strURI.indexOf( SOLR_URI_SELECT ) > 0 )
+        else if ( strURI.indexOf( SOLR_URI_SELECT ) > -1 )
         {
             bCallSolr = true;
         }
-        else if ( strURI.indexOf( SOLR_URI_AUTOCOMPLETE ) > 0 )
+        else if ( strURI.indexOf( SOLR_URI_AUTOCOMPLETE ) > -1 )
         {
             bCallSolr = true;
         }
@@ -117,7 +117,7 @@ public class SolrServerFilter extends SolrDispatchFilter
                 @Override public String getServletPath() {
                     String path = ((HttpServletRequest) getRequest()).getServletPath();
                     path = path.substring( SOLR_URI.length() );
-                    path = "/collection1" + path;
+                    path = "/" + SOLR_CORE_NAME + path;
 
                     return path;
                 };
