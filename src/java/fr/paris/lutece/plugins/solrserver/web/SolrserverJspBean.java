@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,10 +39,8 @@ import fr.paris.lutece.util.html.HtmlTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
- * This class provides the user interface to manage form features ( manage,
- * create, modify, remove)
+ * This class provides the user interface to manage form features ( manage, create, modify, remove)
  */
 public class SolrserverJspBean extends PluginAdminPageJspBean
 {
@@ -51,8 +49,8 @@ public class SolrserverJspBean extends PluginAdminPageJspBean
 
     public final String getForm( HttpServletRequest request )
     {
-        HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_FORM, getLocale(  ), null );
+        HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_FORM, getLocale( ), null );
 
-        return getAdminPage( templateList.getHtml(  ) );
+        return getAdminPage( templateList.getHtml( ) );
     }
 }
