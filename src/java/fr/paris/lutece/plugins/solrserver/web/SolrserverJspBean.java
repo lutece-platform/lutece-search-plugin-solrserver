@@ -46,6 +46,10 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class SolrserverJspBean extends PluginAdminPageJspBean
 {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -3655617347702877735L;
     public static final String RIGHT_MANAGE_SOLRSERVER = "SORLSERVER_ADD_FILE";
     private static final String TEMPLATE_FORM = "admin/plugins/solrserver/form.html";
 
