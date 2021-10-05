@@ -1,38 +1,34 @@
-<?xml version="1.0" encoding="UTF-8"?><plug-in>
-    <name>solrserver</name>
-    <class>fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation</class>
-    <version>3.0.1-SNAPSHOT</version>
-    <description>solrserver.plugin.description</description>
-    <documentation/>
-    <installation/>
-    <changes/>
-    <user-guide/>
-    <provider>solrserver.plugin.provider</provider>
-    <provider-url>http://lutece.paris.fr</provider-url>
-    <icon-url>images/admin/skin/plugins/solrserver/solr.jpg</icon-url>
-    <copyright>Copyright 2001-2015 Mairie de Paris</copyright>
-    <db-pool-required>0</db-pool-required>
-    
-    
-    <filters>
-        <filter>
-            <filter-name>solrserver</filter-name>
-            <url-pattern>/solrserver/*</url-pattern>
-            <filter-class>fr.paris.lutece.plugins.solrserver.SolrServerFilter</filter-class>
-        </filter>
-    </filters>
-    
-    <admin-features>	
-        <admin-feature>
-            <feature-id>SORLSERVER_ADD_FILE</feature-id>
-            <feature-title>solrserver.adminFeature.addfile.name</feature-title>
-            <feature-description>solrserver.adminFeature.addfile.description</feature-description>
-            <feature-level>2</feature-level>
-            <feature-url>jsp/admin/plugins/solrserver/ManageFileInSolr.jsp</feature-url>
-            <feature-icon-url>images/admin/plugins/solrserver/solr.jpg</feature-icon-url>
-            <feature-documentation-url>jsp/admin/documentation/AdminDocumentation.jsp?doc=admin-solrserver</feature-documentation-url>
-        </admin-feature>
-    </admin-features>
-    
-    
+<?xml version="1.0" encoding="UTF-8"?>
+<plug-in>
+   <name>solrserver</name>
+   <class>fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation</class>
+   <version>3.0.1-SNAPSHOT</version>
+   <description>solrserver.plugin.description</description>
+   <documentation />
+   <installation />
+   <changes />
+   <user-guide />
+   <provider>solrserver.plugin.provider</provider>
+   <provider-url>http://lutece.paris.fr</provider-url>
+   <icon-url>images/admin/skin/plugins/solrserver/solr.jpg</icon-url>
+   <copyright>Copyright 2001-2015 Mairie de Paris</copyright>
+   <db-pool-required>0</db-pool-required>
+   <filters>
+      <filter>
+         <filter-name>solrserver</filter-name>
+         <url-pattern>/solrserver/*</url-pattern>
+         <filter-class>fr.paris.lutece.plugins.solrserver.SolrServerFilter</filter-class>
+      </filter>
+   </filters>
+   <admin-features>
+      <admin-feature>
+         <feature-id>SORLSERVER_ADD_FILE</feature-id>
+         <feature-title>solrserver.adminFeature.addfile.name</feature-title>
+         <feature-description>solrserver.adminFeature.addfile.description</feature-description>
+         <feature-level>2</feature-level>
+         <feature-url>jsp/admin/plugins/solrserver/ManageFileInSolr.jsp</feature-url>
+         <feature-icon-url>images/admin/plugins/solrserver/solr.jpg</feature-icon-url>
+         <feature-documentation-url>jsp/admin/documentation/AdminDocumentation.jsp?doc=admin-solrserver</feature-documentation-url>
+      </admin-feature>
+   </admin-features>
 </plug-in>
