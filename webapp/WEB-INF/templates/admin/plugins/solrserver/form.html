@@ -1,11 +1,21 @@
-<div class="row">
-    <h2>#i18n{solrserver.form.title}</h2>
-
-    <form action="solrserver/solr/csv" enctype="multipart/form-data" method="post">
-        <input name="datafile" type="file" />
-        <input name="commit" type="hidden" value="true" />
-        <input class="btn btn-primary" type="submit" />
-    </form>
-
-    <a class="btn btn-primary" href="solrserver/solr/select/?q=*:*&amp;wt=json&indent=on">View result</a>
-</div>
+<#setting url_escaping_charset='ISO-8859-1'>
+<@row>
+	<@columns>
+		<@box>
+      	    <@boxHeader title='#i18n{solrserver.form.title}' boxTools=true>
+                <@aButton href='solrserver/solr/select/?q=*:*&amp;wt=json&indent=on' buttonIcon='cog' target='_blank' size='' title='#i18n{portal.search.search_results.labelResultsRange}' />
+            </@boxHeader>
+    		<@boxBody>
+                <@tform  action='solrserver/solr/csv' enctype='multipart/form-data' >
+                <@input type='hidden' name='commit' value='true'/>
+                <@formGroup labelKey='#i18n{search.solr.adminFeature.fields.form.name}' labelFor='name' mandatory=true>
+                    <@input type='file' name='datafile' />
+                </@formGroup>
+                <@formGroup>
+                    <@button type='submit' buttonIcon='check' title='#i18n{portal.site.popup_send_resource.sendResource}' size='' />
+				</@formGroup>
+        </@tform>
+      </@boxBody>
+    </@box>
+  </@columns>
+</@row>
