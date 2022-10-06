@@ -73,6 +73,8 @@
             stored="true" />
         <field name="document_portlet_id" type="string"
             indexed="true" stored="true" />
+       <field name="id_resource" type="string" indexed="true"
+            stored="true" />
         <dynamicField name="*_string" type="string"
             indexed="true" stored="true" />
         <dynamicField name="*_text" type="text"
