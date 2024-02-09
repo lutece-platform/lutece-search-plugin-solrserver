@@ -83,7 +83,7 @@
     </dependencies>
 
     <properties>
-        <solrVersion>8.11.1</solrVersion> <!-- lucene components version -->
+        <solrVersion>8.11.3</solrVersion> <!-- lucene components version -->
         <componentName>solrserver</componentName>
         <jiraProjectName>SOLRSERVER</jiraProjectName>
         <jiraComponentId>10440</jiraComponentId>
