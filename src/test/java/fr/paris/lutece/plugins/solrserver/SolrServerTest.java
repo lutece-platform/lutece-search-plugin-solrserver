@@ -42,14 +42,10 @@ import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.test.LuteceTestCase;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.solr.client.solrj.impl.HttpSolrClient;
-import org.apache.solr.common.SolrInputDocument;
 import org.springframework.mock.web.DelegatingServletInputStream;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.mock.web.MockServletConfig;
 import org.springframework.mock.web.MockServletContext;
-import org.springframework.util.StreamUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -57,13 +53,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.nio.charset.StandardCharsets;
 
+import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -72,11 +68,18 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class SolrServerTest extends LuteceTestCase
 {
+    /** Content type used to post update commands to Solr */
+    private static final String CONTENT_TYPE_XML = "application/xml";
 
+    /**
+     * Initializes Lutece and installs the solrserver plugin. The LuteceTestCase initializes Lutece without a
+     * servlet context, so it has to be done manually here.
+     *
+     * @throws Exception if the initialization fails
+     */
+    @Override
     public void setUp( ) throws Exception
     {
-        //Because the LuteceTestCase initializes lutece without a servletcontext
-        //it needs to be done manually here
         if( _bInit )
         {
             throw new Exception( "SolrServerTest must be the one to initialize LUTECE" );
@@ -114,24 +117,113 @@ public class SolrServerTest extends LuteceTestCase
         super.setUp( );
     }
 
-    public MockHttpServletRequest newSolrRequest() {
-        return new MockHttpServletRequest( ) {
+    /**
+     * Builds a GET request without body.
+     *
+     * @return the request
+     */
+    public MockHttpServletRequest newSolrRequest( )
+    {
+        return newSolrRequest( null, null );
+    }
+
+    /**
+     * Builds a request for the solr filter. When a body is given, the request is a POST carrying that body,
+     * because Solr disables the <code>stream.body</code> parameter by default since Solr 7.
+     *
+     * @param strContentType the content type of the body, ignored when strBody is null
+     * @param strBody the body of the request, may be null
+     * @return the request
+     */
+    public MockHttpServletRequest newSolrRequest( String strContentType, String strBody )
+    {
+        final byte [ ] bytesBody = ( strBody == null ) ? new byte [ 0 ] : strBody.getBytes( StandardCharsets.UTF_8 );
+
+        MockHttpServletRequest request = new MockHttpServletRequest( ) {
+            /**
+             * {@inheritDoc} The DelegatingServletInputStream of spring-test does not implement the servlet 3.1
+             * methods, so they are added here.
+             */
             @Override
             public ServletInputStream getInputStream() {
-                return new DelegatingServletInputStream(StreamUtils.emptyInput()) {
+                return new DelegatingServletInputStream( new ByteArrayInputStream( bytesBody ) ) {
                     @Override public boolean isFinished() {
+                        try
+                        {
+                            return getSourceStream( ).available( ) == 0;
+                        }
+                        catch ( IOException e )
+                        {
+                            return true;
+                        }
+                    }
+                    @Override public boolean isReady() {
                         return true;
+                    }
+                    @Override public void setReadListener( ReadListener listener ) {
+                        throw new UnsupportedOperationException( );
                     }
                 };
             }
         };
+
+        if ( strBody != null )
+        {
+            request.setMethod( "POST" );
+            request.setContentType( strContentType );
+            request.setContent( bytesBody );
+        }
+
+        return request;
     }
+
     /**
-     * @throws Exception
+     * Sends the request through the solrserver filter and returns the body of the response.
+     *
+     * @param filter the solrserver filter
+     * @param request the request
+     * @return the content of the response
+     * @throws Exception if the filter fails
+     */
+    private String doFilter( LuteceFilter filter, MockHttpServletRequest request ) throws Exception
+    {
+        MockHttpServletResponse response = new MockHttpServletResponse( );
+        System.out.println( request.getRequestURI( ) + "?" + request.getQueryString( ) );
+        filter.getFilter( ).doFilter( request, response, new LuteceFilterChain( ) );
+
+        String strResponse = response.getContentAsString( );
+        System.out.println( strResponse );
+        assertEquals( "Unexpected HTTP status for " + request.getRequestURI( ), MockHttpServletResponse.SC_OK,
+                response.getStatus( ) );
+
+        return strResponse;
+    }
+
+    /**
+     * Sends an update command to solr and checks that it succeeded.
+     *
+     * @param filter the solrserver filter
+     * @param strCommand the xml update command
+     * @throws Exception if the update fails
+     */
+    private void update( LuteceFilter filter, String strCommand ) throws Exception
+    {
+        MockHttpServletRequest request = newSolrRequest( CONTENT_TYPE_XML, strCommand );
+        request.setRequestURI( "/lutece/solrserver/solr/update" );
+        request.setServletPath( SolrServerFilter.SOLR_URI + "/update" );
+        request.setQueryString( "commit=true&wt=json" );
+
+        JsonNode res = new ObjectMapper( ).readTree( doFilter( filter, request ) );
+        assertEquals( "Solr update failed", 0, res.get( "responseHeader" ).get( "status" ).asInt( ) );
+    }
+
+    /**
+     * Pushes a document to solr through the solrserver filter and checks that it can be retrieved.
+     *
+     * @throws Exception if the test fails
      */
     public void testPushDoc(  ) throws Exception
     {
-        //Apparently solr needs time to start
         long nWait = 3000;
         System.out.println("Waiting " + nWait/1000.0 + " seconds for the solrserver to settle");
         Thread.sleep( nWait );
@@ -140,44 +232,20 @@ public class SolrServerTest extends LuteceTestCase
                 "solrserver".equals( f.getName( ) )
         ).findFirst( ).get( );
 
-        MockHttpServletResponse response;
-        MockHttpServletRequest request;
-        LuteceFilterChain lfc;
+        update( filter, "<delete><query>*:*</query></delete>" );
 
-        response = new MockHttpServletResponse( );
-        lfc = new LuteceFilterChain( );
-        request = newSolrRequest( );
-        request.setRequestURI( "/lutece/solrserver/solr/update" );
-        request.setQueryString( "stream.body=<delete><query>*:*</query></delete>&commit=true");
-        request.setServletPath( SolrServerFilter.SOLR_URI + "/update" );
-        System.out.println( request.getRequestURI( ) + "?" + request.getQueryString( ) );
-        filter.getFilter( ).doFilter( request, response, lfc );
-        Thread.sleep( 100 );
+        update( filter,
+                "<add><doc><field name=\"uid\">junit1</field><field name=\"content\">junitcontent1</field></doc></add>" );
 
-        response = new MockHttpServletResponse( );
-        lfc = new LuteceFilterChain( );
-        request = newSolrRequest( );
-        request.setRequestURI( "/lutece/solrserver/solr/update" );
-        request.setServletPath( SolrServerFilter.SOLR_URI + "/update" );
-        request.setQueryString("stream.body=<add><doc><field name=\"uid\">junit1</field><field name=\"content\">junitcontent1</field></doc></add>&commit=true");
-        System.out.println( request.getRequestURI( ) + "?" + request.getQueryString( ) );
-        filter.getFilter( ).doFilter( request, response, lfc );
-        Thread.sleep( 100 );
-
-        response = new MockHttpServletResponse( );
-        lfc = new LuteceFilterChain( );
-        request = newSolrRequest( );
+        MockHttpServletRequest request = newSolrRequest( );
         request.setRequestURI( "/lutece/solrserver/solr/select" );
         request.setServletPath( SolrServerFilter.SOLR_URI + "/select" );
         request.setQueryString("q=*:*&wt=json");
-        System.out.println( request.getRequestURI( ) + "?" + request.getQueryString( ) );
-        filter.getFilter( ).doFilter( request, response, lfc );
-        String strResponse = response.getContentAsString( );
-        System.out.println( strResponse );
-        JsonNode res = new ObjectMapper().readTree( strResponse );
+
+        JsonNode res = new ObjectMapper( ).readTree( doFilter( filter, request ) );
         JsonNode responseJson = res.get( "response" );
         assertEquals( 1, responseJson.get("numFound").asInt( ) );
-        JsonNode doc = res.get( "response" ).get("docs").get( 0 );
+        JsonNode doc = responseJson.get("docs").get( 0 );
         assertEquals( "junit1", doc.get("uid").asText( ) );
         assertEquals( "junitcontent1", doc.get( "content" ).asText( ) );
     }
